@@ -75,3 +75,23 @@
   loop_control:
     label: "{{ item.key }}"
   when: item.value.site_install | default(true) and item.value.multisite.enabled | default(false)
+
+# Activate Redis plugin.
+- name: Maybe activate Redis
+  args:
+    chdir: "{{ www_root }}/{{ item.key }}/{{ item.value.current_path | default('current') }}/"
+  shell: "if $( wp plugin is-installed wp-redis ) && ! $( wp plugin is-active wp-redis ); then wp redis enable; fi"
+  loop: "{{ wordpress_sites | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  when: item.value.site_install | default(true)
+
+# Recreate Redis symlink.
+- name: Maybe enable Redis
+  args:
+    chdir: "{{ www_root }}/{{ item.key }}/{{ item.value.current_path | default('current') }}/"
+  shell: "if $( wp plugin is-installed wp-redis ) && $( wp plugin is-active wp-redis ); then wp redis enable; fi"
+  loop: "{{ wordpress_sites | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  when: item.value.site_install | default(true)

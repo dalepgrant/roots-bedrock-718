@@ -19,3 +19,7 @@ roles:
   - name: mailpit
     src: roots.mailpit
     version: v1.0.0
+
+  # - name: trellis-redis
+  #   src: im_mortal.trellis_redis
+  #   version: 0.3.2
